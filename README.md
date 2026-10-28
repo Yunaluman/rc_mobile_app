@@ -1,236 +1,221 @@
 # IoT Monitoring App
 
-1. Introduction/Présentation du projet
-2. Fonctionnalités principales
-3. Architecture technique
-4. Installation et configuration
-5. Structure du projet
-6. Utilisation
-7. Modèles de données
-8. Services
-9. Widgets principaux
-10. Contribution
-11. Licence
+**English** · [Français](README.fr.md)
 
-## Présentation
+## Overview
 
-Cette application Flutter permet de surveiller et configurer un système IoT connecté (DHT11) en temps réel. Elle se connecte à une base de données Firebase Realtime Database pour afficher les données de température et d'humidité, visualiser leur évolution sur le temps, et configurer des seuils d'alerte avec hystérésis.
+This Flutter app monitors and configures a connected IoT system (DHT11 sensor) in real time. It connects to a Firebase Realtime Database to display temperature and humidity data, chart their evolution over time, and configure alert thresholds with hysteresis.
 
-## Fonctionnalités principales
+## Main features
 
-- **Visualisation de l'état actuel** : Température et humidité en temps réel
-- **Graphique d'évolution** : Visualisation des données de capteurs sur différentes périodes
-- **Configuration des seuils** : Paramétrage des limites de température avec hystérésis
-- **Historique des alertes** : Liste des événements de dépassement de seuil avec pagination
-- **Mode hors ligne** : Persistance des données grâce à Firebase
-- **Actualisation automatique** : Mise à jour des données en temps réel
+- **Current state**: real-time temperature and humidity
+- **Trend chart**: sensor data over several time ranges
+- **Threshold configuration**: temperature limits with hysteresis
+- **Alert history**: paginated list of threshold-crossing events
+- **Offline mode**: data persistence through Firebase
+- **Auto refresh**: real-time data updates
 
-## Architecture technique
+## Technical architecture
 
-L'application est construite sur l'architecture suivante :
-
-- **Frontend** : Flutter (Material Design 3)
-- **Backend** : Firebase Realtime Database
-- **État** : Gestion avec Provider
-- **Graphiques** : fl_chart pour la visualisation des données
-- **Modèle de données** : Modèles spécifiques pour chaque type de données
+- **Frontend**: Flutter (Material Design 3)
+- **Backend**: Firebase Realtime Database
+- **State**: Provider
+- **Charts**: fl_chart
+- **Data model**: dedicated models for each data type
 
 ## Installation
 
-### Prérequis
+### Requirements
 
 - Flutter SDK (^3.6.0)
-- Compte Firebase
+- Firebase account
 - Android Studio / VS Code
 
-### Configuration
+### Setup
 
-1. **Clonez le dépôt**
+1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/username/IoT_Flutter_Firebase.git
-   cd IoT_Flutter_Firebase
+   git clone https://github.com/Yunaluman/rc_mobile_app.git
+   cd rc_mobile_app
    ```
 
-2. **Installez les dépendances**
+2. **Install dependencies**
 
    ```bash
    flutter pub get
    ```
 
-3. **Configurez Firebase**
+3. **Configure Firebase**
 
-   Ajoutez votre fichier `firebase_options.dart` à la racine du projet avec les informations suivantes :
+   Add your `firebase_options.dart` file at the project root with:
    - apiKey
    - databaseURL
-   - Les autres informations requises par FirebaseOptions
+   - the other fields required by FirebaseOptions
 
-4. **Lancez l'application**
+4. **Run the app**
 
    ```bash
    flutter run
    ```
 
-## Structure du projet
+## Project structure
 
 ```
 lib/
-  ├── main.dart              # Point d'entrée de l'application
-  ├── firebase_options.dart  # Configuration Firebase
-  ├── models/                # Modèles de données
+  ├── main.dart              # App entry point
+  ├── firebase_options.dart  # Firebase configuration
+  ├── models/                # Data models
   │    ├── current_state.dart
   │    ├── sensor_reading.dart
   │    ├── threshold_event.dart
   │    └── time_filter.dart
-  ├── services/              # Services pour la logique métier
+  ├── services/              # Business logic services
   │    ├── firebase_service.dart
   │    ├── sensor_service.dart
   │    ├── current_state_service.dart
   │    ├── sensor_reading_service.dart
   │    └── threshold_event_service.dart
-  ├── utils/                 # Utilitaires
+  ├── utils/                 # Utilities
   │    └── map_converter.dart
-  ├── screens/               # Écrans principaux
+  ├── screens/               # Main screens
   │    └── home_screen.dart
-  └── widgets/               # Widgets réutilisables
+  └── widgets/               # Reusable widgets
        ├── current_state_widget.dart
        ├── sensor_readings_chart.dart
        ├── threshold_events_widget.dart
        └── threshold_config_widget.dart
 ```
 
-## Utilisation
+## Usage
 
-### Écran principal
+### Main screen
 
-L'application affiche un écran principal avec plusieurs sections :
+The main screen has several sections:
 
-1. **État actuel** : Affiche la température et l'humidité actuelles avec des codes couleur selon les seuils
-2. **Configuration des seuils** : Permet d'ajuster les seuils d'alerte de température
-3. **Graphique d'évolution** : Visualise l'évolution des données avec plusieurs filtres temporels
-4. **Liste des événements** : Affiche l'historique des dépassements de seuil
+1. **Current state**: current temperature and humidity, color-coded against the thresholds
+2. **Threshold configuration**: adjust the temperature alert thresholds
+3. **Trend chart**: data evolution with several time filters
+4. **Event list**: history of threshold crossings
 
-### Configuration des seuils
+### Threshold configuration
 
-La fonctionnalité de configuration des seuils permet de définir une température cible avec hystérésis :
+Set a target temperature with hysteresis:
 
-- Activez le mode édition avec le switch
-- Utilisez le curseur pour régler la température cible
-- Les seuils haut (+1°C) et bas (-1°C) sont calculés automatiquement
-- Validez les modifications avec le bouton "Enregistrer"
+- Turn on edit mode with the switch
+- Use the slider to set the target temperature
+- High (+1 °C) and low (−1 °C) thresholds are computed automatically
+- Confirm with the "Save" button
 
-## Modèles de données
+## Data models
 
 ### CurrentState
 
-Représente l'état actuel des capteurs :
+Current sensor state:
 
-- `temperature` : Température actuelle (°C)
-- `humidity` : Humidité actuelle (%)
-- `thresholdLow` : Seuil bas de température
-- `thresholdHigh` : Seuil haut de température
-- `lastUpdate` : Date de dernière mise à jour
-- `isOverThreshold` : Indique si la température dépasse les seuils
+- `temperature`: current temperature (°C)
+- `humidity`: current humidity (%)
+- `thresholdLow`: low temperature threshold
+- `thresholdHigh`: high temperature threshold
+- `lastUpdate`: last update date
+- `isOverThreshold`: whether the temperature is outside the thresholds
 
 ### SensorReading
 
-Représente une lecture de capteur historique :
+A historical sensor reading:
 
-- `temperature` : Température relevée (°C)
-- `humidity` : Humidité relevée (%)
-- `timestamp` : Date et heure de la mesure
+- `temperature`: measured temperature (°C)
+- `humidity`: measured humidity (%)
+- `timestamp`: date and time of the measurement
 
 ### ThresholdEvent
 
-Représente un événement de dépassement de seuil :
+A threshold-crossing event:
 
-- `temperature` : Température lors de l'événement (°C)
-- `humidity` : Humidité lors de l'événement (%)
-- `timestamp` : Date et heure de l'événement
-- `eventType` : Type d'événement (dépassement, retour à la normale)
-- `thresholdHigh` : Seuil haut au moment de l'événement
-- `thresholdLow` : Seuil bas au moment de l'événement
+- `temperature`: temperature at the time of the event (°C)
+- `humidity`: humidity at the time of the event (%)
+- `timestamp`: date and time of the event
+- `eventType`: event type (crossing, back to normal)
+- `thresholdHigh`: high threshold at the time of the event
+- `thresholdLow`: low threshold at the time of the event
 
 ## Services
 
 ### FirebaseService
 
-Service de base pour la communication avec Firebase Realtime Database :
+Base service for talking to Firebase Realtime Database:
 
-- Initialisation de la connexion
-- Méthodes CRUD pour les données
-- Gestion des streams de données
-- Vérification de connectivité
-- Conversion sécurisée des types de données
+- Connection initialization
+- CRUD methods
+- Data stream handling
+- Connectivity checks
+- Safe data type conversion
 
 ### SensorService
 
-Service principal qui coordonne tous les services de capteurs :
+Main service coordinating all sensor services:
 
-- Initialisation des services spécialisés
-- Gestion de l'état de l'application
-- Interface unifiée pour l'accès aux données
-- Méthodes pour la mise à jour des seuils et la création d'événements
+- Initializes the specialized services
+- Manages app state
+- Unified data access interface
+- Methods to update thresholds and create events
 
 ### CurrentStateService
 
-Gère l'état actuel des capteurs :
+Handles the current sensor state:
 
-- Récupération et mise à jour de l'état
-- Configuration des seuils de température
-- Surveillance des dépassements de seuil
+- Fetching and updating state
+- Temperature threshold configuration
+- Threshold-crossing monitoring
 
 ### SensorReadingService
 
-Gère les lectures de capteurs historiques :
+Handles historical sensor readings:
 
-- Récupération des données selon différents filtres temporels
-- Traitement et filtrage des lectures
+- Fetching data by time filter
+- Processing and filtering readings
 
 ### ThresholdEventService
 
-Gère les événements de dépassement de seuil :
+Handles threshold-crossing events:
 
-- Création et récupération des événements
-- Notification de nouveaux événements
+- Creating and fetching events
+- Notifying new events
 
-## Gestion de l'hystérésis
+## Hysteresis
 
-Le système utilise un mécanisme d'hystérésis pour éviter les oscillations rapides entre les états :
+The system uses hysteresis to avoid rapid flapping between states:
 
-1. L'utilisateur définit une température cible (par exemple 23°C)
-2. Le système applique automatiquement une marge d'hystérésis (±1°C)
-3. Le seuil haut est fixé à 24°C et le seuil bas à 22°C
-4. Un événement de dépassement est créé uniquement lorsque :
-   - La température passe au-dessus du seuil haut (>24°C)
-   - La température passe en-dessous du seuil bas (<22°C)
-5. Le statut revient à la normale uniquement lorsque la température revient dans la plage acceptable
+1. The user sets a target temperature (e.g. 23 °C)
+2. The system applies a hysteresis margin automatically (±1 °C)
+3. The high threshold is set to 24 °C and the low threshold to 22 °C
+4. A crossing event is created only when:
+   - the temperature rises above the high threshold (> 24 °C)
+   - the temperature drops below the low threshold (< 22 °C)
+5. The status returns to normal only once the temperature is back within the acceptable range
 
-Cette approche évite les faux positifs et les alertes intempestives lors de petites fluctuations de température.
+This avoids false positives and spurious alerts on small temperature fluctuations.
 
-## Optimisations et robustesse
+## Optimizations and robustness
 
-L'application intègre plusieurs optimisations :
+- Safe conversion of Firebase data types
+- Error and connectivity handling
+- Data caching for offline mode
+- Smart data refresh
+- Detailed debug logs
 
-- Conversion sécurisée des types de données Firebase
-- Gestion des erreurs et de la connectivité
-- Cache des données pour le mode hors ligne
-- Rafraîchissement intelligent des données
-- Logs détaillés pour le débogage
+## Possible improvements
 
-## Améliorations possibles
+- User authentication
+- Push notifications on threshold crossings
+- Support for other sensor types
+- Historical data export
+- Advanced admin interface
 
-- Ajout d'authentification utilisateur
-- Notifications push pour les dépassements de seuil
-- Support d'autres types de capteurs
-- Exportation des données historiques
-- Interface d'administration avancée
+## License
 
-## Licence
-
-Ce projet est distribué sous licence MIT. Voir le fichier LICENSE pour plus d'informations.
+Distributed under the MIT license. See the LICENSE file for details.
 
 ---
 
-Développé avec ❤️ par Yunaluman THERESE
-
+Built with ❤️ by Yunaluman THERESE
